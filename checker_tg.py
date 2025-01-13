@@ -139,7 +139,7 @@ def job_notifier():
         if "INACTIVE" in metric_el and not "[DEPRECATED]" in metric_el and not "BlockMesh" in metric_el:
         # if 1 or "INACTIVE" in metric_el:
             metrics_job.append(metric_el)
-        index += 1
+            index += 1
         if index % batch_size == 0:
             requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': "\n".join(metrics_job)})
             metrics_job = []
@@ -153,13 +153,13 @@ def job_notifier():
         response = requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': "\n".join(metrics_job)})
         response.raise_for_status()
         println(f'{response.text}')
+
     # send_la()
 
-
-# def send_la():
-#     result_as_text = get_la()
-#     writeln(result_as_text)
-#     requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': result_as_text})
+def send_la():
+    result_as_text = get_la()
+    writeln(result_as_text)
+    requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': result_as_text})
 
 
 def get_la():
