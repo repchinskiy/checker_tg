@@ -1,5 +1,9 @@
 #!/bin/bash
 
+TG_URL=$1
+TG_CHAT_ID=$2
+CMD_URL=$3
+
 function src_git_repo {
   #check if directory exists
   if [ -d "/root/root/checker_tg" ]; then
@@ -57,7 +61,7 @@ User=root
 Restart=always
 RestartSec=3
 LimitNOFILE=65535
-ExecStart=/root/checker_tg/venv/bin/python3 /root/checker_tg/checker_tg/checker_tg.py
+ExecStart=/root/checker_tg/venv/bin/python3 /root/checker_tg/checker_tg/checker_tg.py $TG_URL $TG_CHAT_ID $CMD_URL
 #ExecStart=/root/.pyenv/versions/3.11.10/bin/python3.11 /root/checker_tg/checker_tg/checker_tg.py
 [Install]
 WantedBy=multi-user.target
