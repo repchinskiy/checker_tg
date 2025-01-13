@@ -41,14 +41,17 @@ def init():
         cmd_url = sys.argv[3]
         check_commands_url.append(cmd_url)
 
-    println(f'sys_params: {sys.argv[0]} TELEGRAM_ALERT_BASE_URL: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} cmd_url: {cmd_url}')
+    println(
+        f'sys_params: {sys.argv[0]} TELEGRAM_ALERT_BASE_URL: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} cmd_url: {cmd_url}')
 
     run_updater_background()
+
 
 def fetch_data(url):
     response = requests.get(url)
     response.raise_for_status()  # Проверка на ошибки HTTP
     return response.text
+
 
 def parse_data(raw_data):
     lines = raw_data.strip().split("\n")
@@ -71,12 +74,12 @@ def println(msg):
 
 def metrics_cache_update():
     metrics_output = []
-    hostname = socket.gethostname()
-    IPAddr = socket.gethostbyname(hostname)
-    whoami = hostname + "/" + IPAddr
+    # hostname = socket.gethostname()
+    # IPAddr = socket.gethostbyname(hostname)
+    # whoami = hostname + "/" + IPAddr
     ip_addr = get_ip_address()
-    ipinf = whoami + " " + ip_addr
-    metrics_output.append(f'{ipinf}')
+    # ipinf = whoami + " " + ip_addr
+    # metrics_output.append(f'{ipinf}')
     now = datetime.datetime.now()
     metrics_output.append(f'{now}')
     la = get_la()
@@ -117,8 +120,9 @@ def job_updater():
 
 def run_notifier():
     while True:
+        time.sleep(30)
         job_notifier()
-        time.sleep(10)
+        time.sleep(60*60)
 
 
 def get_sys_info():
@@ -131,24 +135,31 @@ def job_notifier():
     index = 0
     batch_size = 75
     for metric_el in metrics_output_cached:
-        # if "INACTIVE" in metric_el and not "[DEPRECATED]" in metric_el and not "BlockMesh" in metric_el:
-        if 1 or "INACTIVE" in metric_el:
+        println("metric_el: " + metric_el)
+        if "INACTIVE" in metric_el and not "[DEPRECATED]" in metric_el and not "BlockMesh" in metric_el:
+        # if 1 or "INACTIVE" in metric_el:
             metrics_job.append(metric_el)
         index += 1
         if index % batch_size == 0:
             requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': "\n".join(metrics_job)})
             metrics_job = []
 
+    println("index: " + str(index) + " len(metrics_job): " + str(len(metrics_job)) + "len(metrics_job) % : " + str(
+        len(metrics_job) % batch_size))
+
     if index > 0 and len(metrics_job) > 0 and not len(metrics_job) % batch_size == 0:
-        requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': "\n".join(metrics_job)})
+        println(
+            "tg_url: " + TELEGRAM_ALERT_BASE_URL + " chat_id: " + chat_id + " text: " + "\n".join(metrics_job))
+        response = requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': "\n".join(metrics_job)})
+        response.raise_for_status()
+        println(f'{response.text}')
+    # send_la()
 
-    send_la()
 
-
-def send_la():
-    result_as_text = get_la()
-    writeln(result_as_text)
-    requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': result_as_text})
+# def send_la():
+#     result_as_text = get_la()
+#     writeln(result_as_text)
+#     requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': result_as_text})
 
 
 def get_la():
