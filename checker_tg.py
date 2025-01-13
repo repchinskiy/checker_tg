@@ -141,6 +141,7 @@ def job_notifier():
             metrics_job.append(metric_el)
             index += 1
         if index % batch_size == 0:
+            println("Send TG1 ...")
             requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': "\n".join(metrics_job)})
             metrics_job = []
 
@@ -148,6 +149,7 @@ def job_notifier():
         len(metrics_job) % batch_size))
 
     if index > 0 and len(metrics_job) > 0 and not len(metrics_job) % batch_size == 0:
+        println("Send TG2 ...")
         println(
             "tg_url: " + TELEGRAM_ALERT_BASE_URL + " chat_id: " + chat_id + " text: " + "\n".join(metrics_job))
         response = requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': "\n".join(metrics_job)})
@@ -156,10 +158,10 @@ def job_notifier():
 
     # send_la()
 
-def send_la():
-    result_as_text = get_la()
-    writeln(result_as_text)
-    requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': result_as_text})
+# def send_la():
+#     result_as_text = get_la()
+#     writeln(result_as_text)
+#     requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': result_as_text})
 
 
 def get_la():
