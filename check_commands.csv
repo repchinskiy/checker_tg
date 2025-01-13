@@ -1,0 +1,2 @@
+1.OpenLedger(d);sudo docker ps | grep opl_worker > /dev/null 2>&1 && sudo docker ps | grep opl_scraper > /dev/null 2>&1 && exit 0 || exit 1
+2.Mock2(s);exit 0 || exit 1
