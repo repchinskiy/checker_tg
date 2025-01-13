@@ -122,7 +122,7 @@ def run_notifier():
     while True:
         time.sleep(30)
         job_notifier()
-        time.sleep(60*60)
+        time.sleep(60 * 60)
 
 
 def get_sys_info():
@@ -137,26 +137,29 @@ def job_notifier():
     for metric_el in metrics_output_cached:
         println("metric_el: " + metric_el)
         if "INACTIVE" in metric_el and not "[DEPRECATED]" in metric_el and not "BlockMesh" in metric_el:
-        # if 1 or "INACTIVE" in metric_el:
+            # if 1 or "INACTIVE" in metric_el:
             metrics_job.append(metric_el)
             index += 1
-        if index % batch_size == 0:
-            println("Send TG1 ...")
-            requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': "\n".join(metrics_job)})
+        if index > 0 and index % batch_size == 0:
+            # println("Send TG1 ...")
+            content = "\n".join(metrics_job)
+            println(f'tg_url: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} text: {content}')
+            requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': content})
             metrics_job = []
 
     println("index: " + str(index) + " len(metrics_job): " + str(len(metrics_job)) + "len(metrics_job) % : " + str(
         len(metrics_job) % batch_size))
 
     if index > 0 and len(metrics_job) > 0 and not len(metrics_job) % batch_size == 0:
-        println("Send TG2 ...")
-        println(
-            "tg_url: " + TELEGRAM_ALERT_BASE_URL + " chat_id: " + chat_id + " text: " + "\n".join(metrics_job))
-        response = requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': "\n".join(metrics_job)})
+        # println("Send TG2 ...")
+        content = "\n".join(metrics_job)
+        println(f'tg_url: {TELEGRAM_ALERT_BASE_URL} chat_id: {chat_id} text: {content}')
+        response = requests.get(url=TELEGRAM_ALERT_BASE_URL, params={'chat_id': chat_id, 'text': content})
         response.raise_for_status()
         println(f'{response.text}')
 
     # send_la()
+
 
 # def send_la():
 #     result_as_text = get_la()
