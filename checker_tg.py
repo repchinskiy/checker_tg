@@ -96,6 +96,18 @@ def metrics_cache_update():
             status_metric = "active" if status else "INACTIVE"
             metrics_output.append(f'{node_name}: {status_metric}')
 
+    f = open("/root/checker_tg/checker_tg/check_commands_local.csv", "r")
+    lines = f.readlines()
+    f.close()
+    nodes_data = [line.split(";") for line in lines]
+
+    for node_name, command in nodes_data:
+        println(f'node_name: {node_name} command:{command}')
+        if node_name.startswith("#"): continue
+        status = check_node(command, ip_addr)
+        status_metric = "active" if status else "INACTIVE"
+        metrics_output.append(f'{node_name}: {status_metric}')
+
     global metrics_output_cached
     metrics_output_cached = metrics_output
 
