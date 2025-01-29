@@ -5,4 +5,5 @@
 4.Titan(d);sudo docker ps | grep titan > /dev/null 2>&1 && exit 0 || exit 1
 5.GaiaNet(cli);pgrep --count wasmedge > /dev/null 2>&1 && tmux ls | grep gaianet > /dev/null 2>&1 && exit 0 || exit 1
 6.Initverse(s);service initverse status | grep running > /dev/null 2>&1 && exit 0 || exit 1
+7.Privasea(d);docker ps | grep privanetix-node > /dev/null 2>&1 && exit 0 || exit 1
 #3.Multiple(cli);pgrep --count multiple-node > /dev/null 2>&1 && exit 0 || exit 1
